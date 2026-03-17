@@ -1,1 +1,0 @@
-# community-seed-bank
