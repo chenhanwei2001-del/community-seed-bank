@@ -1,0 +1,2351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SMU Seed Library</title>
+  <style>
+    :root{
+      --bg:#f3f8f4;
+      --bg-2:#eef5f0;
+      --card:#ffffff;
+      --line:#cfe0d5;
+      --text:#1d342b;
+      --muted:#60766c;
+      --brand:#256f52;
+      --brand-2:#2f8a67;
+      --brand-3:#e2f1e8;
+      --soft:#f8fcf9;
+      --warn:#b53a3a;
+      --amber:#8a6a1a;
+      --shadow:0 16px 36px rgba(22,49,38,.08);
+      --radius:22px;
+      --max:1260px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, #e6f7ed 0%, transparent 28%),
+        radial-gradient(circle at bottom left, #edf8f0 0%, transparent 24%),
+        var(--bg);
+    }
+
+    img{max-width:100%;display:block}
+    a{text-decoration:none;color:inherit}
+    button,input,select,textarea{font:inherit}
+
+    .wrap{width:min(var(--max),calc(100% - 28px));margin:0 auto}
+
+    header{
+      position:sticky;top:0;z-index:50;
+      background:rgba(243,248,244,.92);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding:12px 0;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;cursor:pointer;min-width:0;
+      flex:0 0 auto;
+    }
+    .brand-mark{
+      width:44px;height:44px;border-radius:16px;
+      display:grid;place-items:center;
+      background:linear-gradient(180deg,var(--brand),var(--brand-2));
+      color:#fff;font-size:22px;font-weight:900;box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
+    .brand-title{font-size:17px;font-weight:900;line-height:1.05}
+    .brand-sub{
+      font-size:11px;color:var(--muted);margin-top:4px;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px
+    }
+
+    nav{
+      display:flex;align-items:center;gap:4px;flex-wrap:nowrap;overflow:auto;
+      scrollbar-width:none;min-width:0
+    }
+    nav::-webkit-scrollbar{display:none}
+    .nav-btn{
+      appearance:none;border:1px solid transparent;background:transparent;color:var(--text);
+      border-radius:10px;padding:8px 10px;font-size:12px;font-weight:800;cursor:pointer;
+      white-space:nowrap;flex:0 0 auto;
+    }
+    .nav-btn:hover,.nav-btn.active{
+      background:#fff;border-color:var(--line);box-shadow:0 8px 18px rgba(22,49,38,.05);
+    }
+
+    main{padding:22px 0 64px}
+    .page{display:none}
+    .page.active{display:block}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+
+    h1,h2,h3,h4{margin:0 0 10px;line-height:1.12}
+    h1{font-size:40px;letter-spacing:-.03em;margin-top:14px}
+    h2{font-size:24px;letter-spacing:-.02em}
+    h3{font-size:18px;letter-spacing:-.01em}
+    p{margin:8px 0;color:var(--muted);line-height:1.55}
+
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);border-radius:999px;background:#fff;
+      padding:8px 12px;font-size:12px;font-weight:900;text-transform:uppercase;color:var(--brand);
+    }
+    .eyebrow-dot{
+      width:8px;height:8px;border-radius:50%;background:var(--brand-2);
+      box-shadow:0 0 0 6px rgba(47,138,103,.12)
+    }
+
+    .hero{
+      display:grid;grid-template-columns:1.18fr .82fr;gap:18px;align-items:stretch;
+    }
+    .hero-main{
+      padding:32px;
+      background:
+        radial-gradient(circle at top right, #dff3e8 0, transparent 30%),
+        linear-gradient(180deg,#ffffff 0%,#f8fcf9 100%);
+    }
+
+    .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      border-radius:16px;padding:13px 18px;font-weight:900;
+      background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;
+      box-shadow:0 12px 20px rgba(31,107,79,.22);
+      transition:.18s ease;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.secondary{
+      background:#fff;color:var(--text);border:1px solid var(--line);box-shadow:none;
+    }
+    .btn.ghost{
+      background:transparent;color:var(--brand);border:1px dashed var(--line);box-shadow:none;
+    }
+    .btn.lg{padding:18px 24px;font-size:17px;border-radius:18px}
+
+    .steps{display:grid;gap:12px}
+    .step{
+      display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start;
+      border:1px solid var(--line);border-radius:18px;background:#fff;padding:14px;
+    }
+    .step-num{
+      width:42px;height:42px;border-radius:14px;background:var(--brand-3);
+      display:grid;place-items:center;color:var(--brand);font-size:18px;font-weight:900;
+    }
+
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+    .stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
+    .stat-num{font-size:28px;font-weight:900;line-height:1;color:var(--brand)}
+    .stat-label{font-size:12px;color:var(--muted);margin-top:6px}
+
+    .section-head{
+      display:flex;align-items:end;justify-content:space-between;gap:12px;margin:28px 0 14px;
+    }
+    .section-head p{margin:0}
+
+    .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .pill,.badge,.chip{
+      display:inline-flex;align-items:center;gap:8px;
+      border-radius:999px;padding:8px 12px;background:#fff;border:1px solid var(--line);
+      font-size:12px;color:var(--muted);font-weight:800;
+    }
+
+    .catalog-layout{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
+    .filter-stack{display:grid;gap:14px;position:sticky;top:86px}
+    .filter-shell{
+      background:#f7faf8;border:1px solid var(--line);border-radius:26px;padding:20px;
+    }
+    .filter-shell h3{font-size:16px;margin-bottom:4px}
+    .filter-shell p{font-size:13px;margin:0 0 14px}
+    .filter-box{
+      background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;margin-top:16px;
+    }
+    .filter-title{font-size:12px;font-weight:900;color:var(--text);margin-bottom:10px}
+    .search-shell{
+      border:1px solid var(--line);border-radius:16px;background:#fff;padding:12px 14px;
+    }
+    .search-shell input{
+      width:100%;border:none;outline:none;background:transparent;padding:0;font-size:14px;color:var(--text);
+    }
+    .search-shell input::placeholder{color:#98a7a0;font-weight:700}
+    .seg-row{display:flex;gap:10px;flex-wrap:wrap}
+    .seg{
+      appearance:none;border:1px solid var(--line);background:#fff;color:var(--muted);
+      border-radius:999px;padding:9px 14px;font-size:12px;font-weight:900;cursor:pointer;
+    }
+    .seg.active{background:var(--brand);color:#fff;border-color:transparent}
+
+    .seed-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:18px;
+      align-items:stretch;
+    }
+    .seed-card{
+      overflow:hidden;
+      padding:0;
+      display:flex;
+      flex-direction:column;
+      height:100%;
+    }
+    .seed-media{
+      position:relative;
+      aspect-ratio:1.45 / 1;
+      background:linear-gradient(135deg,#eef7f1 0%,#dceee2 100%);
+      border-bottom:1px solid var(--line);
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+    .seed-photo{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .seed-media::after{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(180deg,rgba(0,0,0,.04) 0%, rgba(0,0,0,.24) 100%);
+      pointer-events:none;
+    }
+    .seed-media-top{
+      position:absolute;top:14px;left:14px;right:14px;z-index:2;
+      display:flex;justify-content:space-between;align-items:start;gap:10px;
+    }
+    .seed-visual-tag{
+      padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.65);
+      font-size:11px;font-weight:900;color:var(--brand);
+      backdrop-filter:blur(6px);
+    }
+    .seed-visual-mark{
+      width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.88);
+      display:grid;place-items:center;font-size:22px;backdrop-filter:blur(6px);
+    }
+    .seed-media-bottom{
+      position:absolute;left:16px;right:16px;bottom:14px;z-index:2;color:#fff;
+      text-shadow:0 2px 10px rgba(0,0,0,.35);
+    }
+    .seed-media-bottom h4{margin:0;font-size:22px;letter-spacing:-.02em}
+    .seed-media-bottom p{margin:6px 0 0;color:rgba(255,255,255,.92);font-size:12px;line-height:1.45}
+
+    .seed-body{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      flex:1 1 auto;
+    }
+    .seed-head{display:flex;align-items:start;justify-content:space-between;gap:10px}
+    .seed-badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .badge{padding:6px 10px;font-size:11px}
+    .price{font-size:19px;font-weight:900;color:var(--brand)}
+    .tiny{font-size:12px;color:var(--muted);line-height:1.5}
+    .tiny.warn{color:var(--warn);font-weight:900}
+    .tiny.amber{color:var(--amber);font-weight:900}
+    .hint-block{padding:16px;border-radius:18px;background:#fbfefc;border:1px dashed var(--line)}
+
+    .list{display:grid;gap:10px;list-style:none;padding:0;margin:12px 0 0}
+    .list li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start}
+    .list i{
+      width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+      background:var(--brand-3);color:var(--brand);font-style:normal;font-size:12px;font-weight:900;
+    }
+
+    .seed-actions{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      margin-top:auto;padding-top:16px;
+    }
+    .qty-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .qty-control{
+      display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:4px;background:#fff;
+    }
+    .qty-btn{
+      width:32px;height:32px;border:none;border-radius:50%;background:#edf7f1;
+      color:var(--brand);font-size:18px;font-weight:900;cursor:pointer;
+    }
+    .qty-input{
+      width:52px;text-align:center;border:none;background:transparent;padding:0;font-weight:900;color:var(--text);outline:none;
+    }
+
+    .quiz-shell{padding:4px 0 0}
+    .quiz-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:22px;align-items:start}
+    .quiz-main,.quiz-result-card{
+      background:rgba(255,255,255,.76);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:24px;
+    }
+    .quiz-progress{height:16px;border-radius:999px;background:#dfe9e4;border:1px solid #c8ddd0;overflow:hidden;margin-bottom:22px}
+    .quiz-progress-bar{height:100%;width:0;background:linear-gradient(180deg,var(--brand),var(--brand-2));transition:width .22s ease}
+    .quiz-qtag{
+      display:inline-flex;width:100%;align-items:center;border:1px solid #c8ddd0;border-radius:999px;
+      padding:12px 16px;font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--brand);
+      background:rgba(255,255,255,.72);
+    }
+    .quiz-question{font-size:28px;line-height:1.16;margin:18px 0 16px;letter-spacing:-.02em}
+    .quiz-question.emph{font-weight:1000}
+    .quiz-options{display:grid;gap:14px;margin-top:8px}
+    .quiz-option{
+      appearance:none;width:100%;text-align:left;border:1px solid #c8ddd0;background:rgba(255,255,255,.82);
+      color:var(--text);border-radius:22px;padding:18px;font-size:17px;font-weight:800;cursor:pointer;transition:.18s ease;
+    }
+    .quiz-option:hover{border-color:rgba(31,107,79,.45);transform:translateY(-1px);box-shadow:0 10px 20px rgba(22,49,38,.05)}
+    .quiz-side{display:grid;gap:18px}
+    .quiz-side .card{background:rgba(255,255,255,.72)}
+
+    .result-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    .result-badge,.result-fit{
+      display:inline-flex;align-items:center;border:1px solid #c8ddd0;border-radius:999px;background:rgba(255,255,255,.8);
+      font-weight:900;color:var(--brand);
+    }
+    .result-badge{padding:10px 16px;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+    .result-fit{padding:12px 18px;color:var(--muted);min-width:320px;max-width:100%}
+    .result-seeds{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:12px}
+    .result-seed{border:1px solid var(--line);border-radius:22px;background:rgba(255,255,255,.75);padding:18px}
+    .result-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .cart-list,.feed{display:grid;gap:12px}
+    .cart-item{
+      display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;
+      border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff;
+    }
+    .cart-name{font-weight:900;font-size:16px}
+    .cart-meta{font-size:12px;color:var(--muted);margin-top:6px}
+    .cart-right{text-align:right;display:grid;gap:10px;justify-items:end}
+    .sum-row{display:flex;justify-content:space-between;gap:12px;margin:8px 0;font-size:14px}
+    .sum-row.total{
+      margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-weight:900;font-size:17px;color:var(--text);
+    }
+    .sum-row.deposit span:first-child{color:var(--brand)}
+    .sum-row.fee span:first-child{color:var(--amber)}
+    .sum-box{
+      padding:14px 16px;border-radius:18px;background:#f8fcf9;border:1px solid var(--line);margin-top:14px;
+    }
+
+    .checkout-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:18px;align-items:start}
+    .pay-card{
+      background:radial-gradient(circle at top right,#e7f7ee 0,transparent 34%),linear-gradient(180deg,#fff 0%,#f8fcf9 100%);
+    }
+    .qr{
+      margin:14px auto 0;width:300px;max-width:100%;background:#fff;border:1px solid var(--line);
+      border-radius:18px;padding:16px;box-shadow:var(--shadow);
+    }
+    .qr img{width:100%;height:auto;border-radius:10px}
+    .qr-fallback{
+      width:100%;aspect-ratio:1/1;border-radius:12px;border:1px dashed var(--line);
+      background:linear-gradient(135deg,#f8fbf9,#eef6f1);
+      display:grid;place-items:center;padding:20px;text-align:center;
+    }
+    .form-frame{
+      width:100%;height:1109px;border:1px solid var(--line);border-radius:18px;background:#fff;margin-top:14px;
+    }
+
+    .community-layout{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
+    .community-sidebar{display:grid;gap:16px;position:sticky;top:86px}
+    .post{
+      background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 8px 18px rgba(22,49,38,.04);
+    }
+    .post-head{display:flex;justify-content:space-between;gap:10px;align-items:start}
+    .post-user{font-weight:900}
+    .post-meta{font-size:12px;color:var(--muted);margin-top:4px}
+    .post-actions{display:flex;gap:16px;align-items:center;margin-top:12px;color:var(--muted);font-size:13px;font-weight:700}
+    .post-img{
+      margin-top:12px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#eff8f2;
+    }
+    .post-img img{width:100%;max-height:360px;object-fit:cover}
+    .post-tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:8px}
+    .post-tools button{
+      border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;padding:7px 11px;cursor:pointer;font-size:12px;font-weight:800;
+    }
+    .comment-box{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+    .comment-list{display:grid;gap:8px;margin-top:12px}
+    .comment{
+      background:#f9fcfa;border:1px solid var(--line);border-radius:14px;padding:10px 12px;
+    }
+    .comment-author{font-size:12px;font-weight:900;color:var(--text)}
+    .comment-text{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.45}
+
+    .event-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .event-card{
+      display:flex;flex-direction:column;gap:14px;
+      background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow);
+    }
+    .event-date{
+      width:84px;border-radius:18px;background:var(--brand-3);padding:12px 10px;text-align:center;
+      color:var(--brand);
+    }
+    .event-date .day{font-size:26px;font-weight:1000;line-height:1}
+    .event-date .month{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+    .event-head{display:flex;align-items:start;justify-content:space-between;gap:12px}
+    .event-meta{display:grid;gap:8px}
+    .event-chip{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;
+      font-size:12px;font-weight:800;color:var(--muted);
+    }
+
+    .empty{
+      border:1px dashed var(--line);border-radius:18px;padding:22px;text-align:center;color:var(--muted);background:#fbfefc;
+    }
+    .note{
+      font-size:13px;color:var(--muted);padding:12px 14px;border-radius:16px;background:#fbfefc;border:1px dashed var(--line);
+    }
+    .tabbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .tab{
+      border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:900;color:var(--muted);cursor:pointer;
+    }
+    .tab.active{background:var(--brand);color:#fff;border-color:transparent}
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+    .gallery-item{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#fff;box-shadow:0 8px 18px rgba(22,49,38,.04)}
+    .gallery-visual{aspect-ratio:1.2 / 1;display:grid;place-items:center;font-size:52px;background:linear-gradient(135deg,#dff3e8,#edf9f0)}
+    .gallery-copy{padding:14px;font-size:13px}
+    .applied-note{
+      margin:0 0 16px;border:1px solid var(--line);background:#f7fbf8;border-radius:18px;padding:14px 16px;
+    }
+
+    .map-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+    .map-card{overflow:hidden;padding:0}
+    .map-copy{padding:18px}
+    .map-frame{
+      width:100%;height:280px;border:0;border-top:1px solid var(--line);
+    }
+
+    .oos-card{opacity:0.72;filter:grayscale(0.3);}
+    .oos-overlay{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      background:rgba(15,28,22,.72);color:#fff;
+      font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;
+      border-radius:999px;padding:8px 16px;pointer-events:none;white-space:nowrap;
+    }
+    .oos-badge{
+      background:#fdf0f0;border-color:#f0c8c8;color:var(--warn);font-weight:900;
+    }
+
+    .foot{margin-top:36px;color:var(--muted);font-size:12px;text-align:center}
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(15,28,22,.48);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:200;
+    }
+    .modal.open{display:flex}
+    .modal-card{
+      width:min(760px,100%);
+      max-height:min(88vh,900px);
+      overflow:auto;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:0 30px 80px rgba(0,0,0,.22);
+      padding:24px;
+      position:relative;
+    }
+    .modal-close{
+      position:absolute;
+      top:16px;
+      right:16px;
+      width:40px;
+      height:40px;
+      border:none;
+      border-radius:50%;
+      background:#edf7f1;
+      color:var(--brand);
+      font-size:22px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .modal-section{
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
+    }
+    .modal-section:first-of-type{
+      margin-top:14px;
+      padding-top:0;
+      border-top:none;
+    }
+
+    /* ── Hamburger menu (mobile only) ─────────────────────────── */
+    .hamburger{
+      display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+      width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
+      background:#fff;cursor:pointer;flex:0 0 auto;
+    }
+    .hamburger span{display:block;width:18px;height:2px;border-radius:2px;background:var(--text);transition:.2s ease;}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+    .mobile-nav-drawer{
+      display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:49;
+      padding-top:72px;background:rgba(243,248,244,.97);backdrop-filter:blur(16px);overflow-y:auto;
+    }
+    .mobile-nav-drawer.open{display:block}
+    .mobile-nav-list{display:flex;flex-direction:column;gap:4px;padding:16px;}
+    .mobile-nav-item{
+      appearance:none;border:1px solid transparent;background:transparent;
+      color:var(--text);border-radius:14px;padding:16px 18px;
+      font-size:16px;font-weight:800;cursor:pointer;text-align:left;width:100%;
+    }
+    .mobile-nav-item:hover,.mobile-nav-item.active{background:#fff;border-color:var(--line);box-shadow:0 4px 12px rgba(22,49,38,.06);}
+    .mobile-nav-item.active{color:var(--brand)}
+
+    /* ── Tablet ─────────────────────────────────────────────────── */
+    @media (max-width:1080px){
+      .hero,.checkout-grid,.result-seeds,.event-grid{grid-template-columns:1fr 1fr}
+      .catalog-layout,.quiz-layout,.community-layout{grid-template-columns:1fr}
+      .filter-stack,.community-sidebar{position:static}
+      .seed-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .map-grid{grid-template-columns:1fr}
+    }
+
+    /* ── Mobile ─────────────────────────────────────────────────── */
+    @media (max-width:760px){
+      .hero,.two-col,.checkout-grid,.gallery,.result-seeds,.event-grid,.stats{grid-template-columns:1fr}
+      .cart-item{grid-template-columns:1fr}
+      .cart-right{justify-items:start;text-align:left}
+      .seed-actions{flex-direction:column;align-items:flex-start}
+      .qty-wrap{justify-content:flex-start}
+
+      h1{font-size:28px}
+      h2{font-size:20px}
+      .hero-main{padding:20px}
+      .quiz-question{font-size:20px}
+      .result-fit{min-width:0}
+
+      /* Header */
+      .topbar{align-items:center;gap:10px;padding:10px 0}
+      nav#nav{display:none}
+      .hamburger{display:flex}
+      .brand-sub{display:none}
+
+      /* Cards */
+      .card{padding:16px;border-radius:18px}
+      .seed-body{padding:14px}
+      .seed-media-bottom h4{font-size:17px}
+
+      /* Seed grid — 2 cols on mobile */
+      .seed-grid{grid-template-columns:1fr 1fr;gap:12px}
+
+      /* Events */
+      .event-grid{grid-template-columns:1fr}
+
+      /* Modal — slide up from bottom */
+      .modal-card{
+        width:100%;max-height:92vh;
+        border-radius:20px 20px 0 0;
+        position:fixed;bottom:0;left:0;right:0;
+      }
+      .modal{align-items:flex-end;padding:0}
+
+      /* Quiz */
+      .quiz-layout{grid-template-columns:1fr}
+      .quiz-side{display:none}
+
+      /* Map */
+      .map-grid{grid-template-columns:1fr}
+      .map-frame{height:220px}
+
+      /* Buttons */
+      .btn{padding:14px 16px}
+      .btn.lg{padding:16px 20px;font-size:16px}
+    }
+
+    @media (max-width:420px){
+      .seed-grid{grid-template-columns:1fr}
+      h1{font-size:24px}
+      .brand-title{font-size:15px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap topbar">
+      <div class="brand" onclick="app.navigate('home');closeMobileNav()">
+        <div class="brand-mark">🌱</div>
+        <div>
+          <div class="brand-title">SMU Seed Library</div>
+          <div class="brand-sub">Pick seeds. Grow something real. Share what you learn.</div>
+        </div>
+      </div>
+      <nav id="nav"></nav>
+      <button class="hamburger" id="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="mobile-nav-drawer" id="mobileNavDrawer">
+    <div class="mobile-nav-list" id="mobileNavList"></div>
+  </div>
+
+  <main class="wrap">
+    <section id="page-home" class="page active"></section>
+    <section id="page-seeds" class="page"></section>
+    <section id="page-finder" class="page"></section>
+    <section id="page-cart" class="page"></section>
+    <section id="page-community" class="page"></section>
+    <section id="page-events" class="page"></section>
+    <section id="page-returns" class="page"></section>
+    <section id="page-account" class="page"></section>
+
+    <div class="foot">
+      Grow, save, return, and keep the seed cycle going.
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         GOOGLE SHEETS SETUP INSTRUCTIONS
+         Read this once, follow the steps, and your inventory will be live.
+    ════════════════════════════════════════════════════════════════════════════
+
+    STEP 1 — Create your Google Sheet
+    ───────────────────────────────────────────────────────────────────────────
+    Go to sheets.google.com and create a new spreadsheet.
+    Name it something like "SMU Seed Library Inventory".
+
+    STEP 2 — Set up the columns (Row 1 = headers, exactly as shown below)
+    ───────────────────────────────────────────────────────────────────────────
+    Copy and paste these exact column names into Row 1 of your sheet:
+
+      ID | Name | Icon | Level | Category | Tags | Sunlight | Water | Space |
+      Stock | Price | SeedsPerPack | Summary | ImageURL | Status |
+      CareSeedCare | CarePlanting | CarePlantCare | CareSaving
+
+    Column explanations:
+    • ID          — A short unique ID with no spaces, e.g. butterfly-pea
+                    (if you leave this blank, it is auto-generated from the Name)
+    • Name        — Full seed name, e.g. Butterfly Pea Flower
+    • Icon        — An emoji, e.g. 🪻
+    • Level       — One of: Beginner, Slightly advanced, Intermediate, Advanced
+    • Category    — One of: Flower, Edible, Fruit (or any new category you like)
+    • Tags        — Comma-separated tags, e.g. beauty,pollinators,tea,starter
+    • Sunlight    — Free text, e.g. Full sun to partial sun
+    • Water       — Free text, e.g. Water when top soil starts to dry
+    • Space       — Free text, e.g. Medium pot or planter
+    • Stock       — A whole number, e.g. 12 (set to 0 for out of stock)
+    • Price       — A number, e.g. 1.50
+    • SeedsPerPack — A whole number, e.g. 12
+    • Summary     — One sentence describing the seed
+    • ImageURL    — A public image link. Options:
+                    a) Upload photo to Google Drive → right-click → Share →
+                       Anyone with link → Copy link → paste here
+                    b) Any public image URL from the web
+                    c) Leave blank for no photo
+    • Status      — Type "active" to show the seed, "inactive" to hide it
+    • CareSeedCare — Care instructions separated by the | character
+                     e.g. Soak seeds overnight.|Keep medium lightly moist.
+    • CarePlanting — Same format, for planting instructions
+    • CarePlantCare — Same format, for ongoing plant care
+    • CareSaving   — Same format, for seed saving instructions
+
+    STEP 3 — Add your seed data
+    ───────────────────────────────────────────────────────────────────────────
+    Fill in one row per seed type. You can copy the existing seeds from the
+    built-in data as a starting point if you like.
+
+    To UPDATE stock: just change the number in the Stock column.
+    To ADD a new seed: add a new row with all columns filled.
+    To DECOMMISSION a seed: change its Status column from "active" to "inactive".
+    To BRING IT BACK: change Status back to "active".
+
+    STEP 4 — Publish the sheet as CSV
+    ───────────────────────────────────────────────────────────────────────────
+    a) In Google Sheets, click the menu: File → Share → Publish to web
+    b) In the first dropdown, make sure it says "Sheet1" (or your sheet name)
+    c) In the second dropdown, change it from "Web page" to "Comma-separated values (.csv)"
+    d) Click "Publish"
+    e) Click OK when it asks you to confirm
+    f) A URL will appear. It looks like:
+       https://docs.google.com/spreadsheets/d/e/LONG_ID_HERE/pub?gid=0&single=true&output=csv
+    g) Copy that entire URL.
+
+    STEP 5 — Paste the URL into this file
+    ───────────────────────────────────────────────────────────────────────────
+    Open this HTML file in a text editor (e.g. Notepad, VS Code).
+    Find this line near the top of the SCRIPT section:
+
+      const SHEET_CSV_URL = "YOUR_GOOGLE_SHEET_CSV_URL_HERE";
+
+    Replace YOUR_GOOGLE_SHEET_CSV_URL_HERE with the URL you copied.
+    Save the file. Done!
+
+    STEP 6 — Test it
+    ───────────────────────────────────────────────────────────────────────────
+    Open the HTML file in your browser and go to "Browse seeds".
+    You should see your seeds loading from the sheet within a second or two.
+    If something goes wrong, the site will fall back to the built-in data and
+    show a yellow warning message at the top of the catalogue page.
+
+    COMMON ISSUES:
+    • If you see "Could not reach Google Sheets" — double-check you published as
+      CSV (not as a web page) and that the URL is pasted correctly.
+    • If seeds are missing — check the Status column says "active" exactly.
+    • If care info is missing — make sure your care columns use | to separate
+      each instruction (not commas or line breaks).
+
+    ══════════════════════════════════════════════════════════════════════════ -->
+  </main>
+
+  <div id="careModal" class="modal" onclick="app.closeCareModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="app.closeCareModal()">×</button>
+      <div id="careModalContent"></div>
+    </div>
+  </div>
+
+  <script>
+    const GOOGLE_FORM = {
+      viewBase: "https://docs.google.com/forms/d/e/1FAIpQLSfz7qFSHXSzW4KO0btc2H3QX1y7Urlphacq3enll9ILDMIkPA/viewform?usp=pp_url",
+      fieldOrderSummary: "198888124",
+      fieldTotalPacks: "1109373975",
+      fieldAcknowledgment: "1127707271",
+      acknowledgmentValue: "I acknowledge"
+    };
+
+    // ─── TELEGRAM NOTIFICATIONS ──────────────────────────────────────────────────
+    // To receive an order ping on Telegram:
+    // 1. Open Telegram and search for @BotFather
+    // 2. Send /newbot and follow the prompts to create a bot
+    // 3. Copy the token BotFather gives you and paste it below as TELEGRAM_BOT_TOKEN
+    // 4. Start a chat with your new bot (search its username and press Start)
+    // 5. Open this URL in your browser to get your chat ID:
+    //    https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates
+    //    Look for "chat":{"id": — that number is your TELEGRAM_CHAT_ID
+    // 6. Paste both values below and save the file
+    const TELEGRAM_BOT_TOKEN = "8661140381:AAG9FIziSks3svfHxfdDgzuLJ-uPpeufwNE";
+    const TELEGRAM_CHAT_ID   = "455899549";
+
+    async function sendTelegramNotification(message) {
+      if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === "YOUR_BOT_TOKEN_HERE") return;
+      try {
+        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({chat_id: TELEGRAM_CHAT_ID, text: message})
+        });
+        const data = await res.json();
+        if (!data.ok) console.warn("Telegram API error:", data.description);
+      } catch(e) { console.warn("Telegram notification failed:", e.message); }
+    }
+    // ────────────────────────────────────────────────────────────────────────────
+
+    // ─── EVENTS SHEET URL ────────────────────────────────────────────────────────
+    // Paste the CSV URL for your Events tab here (separate tab from seeds).
+    // In Google Sheets: publish the Events sheet tab as CSV and paste that URL.
+    // Events sheet columns: Title | Date | Time | Venue | Type | Summary | Notes | Status
+    // Notes: separate multiple notes with the | character
+    // Status: "active" to show, "inactive" to hide
+    const EVENTS_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRTHRARnUGcrAlOdVdlB7hkudWb65AGlW9I_BXqp35cZ6yE8mQPaGcreVYz0YvW2dNB1oNUSUeIUTI6/pub?gid=803652017&single=true&output=csv";
+    // ────────────────────────────────────────────────────────────────────────────
+
+    const NAV_ITEMS = [
+      {id:"home",      label:"Home"},
+      {id:"seeds",     label:"Browse seeds"},
+      {id:"finder",    label:"Personality test"},
+      {id:"cart",      label:"Cart & checkout"},
+      {id:"community", label:"Community"},
+      {id:"events",    label:"Events"},
+      {id:"returns",   label:"Returns"},
+      {id:"account",   label:"My account"}
+    ];
+
+    // ─── GOOGLE SHEETS CONFIG ───────────────────────────────────────────────────
+    // STEP 1: Paste your published Google Sheets CSV URL here.
+    // See the setup instructions in the page footer for how to get this URL.
+    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRTHRARnUGcrAlOdVdlB7hkudWb65AGlW9I_BXqp35cZ6yE8mQPaGcreVYz0YvW2dNB1oNUSUeIUTI6/pub?gid=0&single=true&output=csv";
+    // ────────────────────────────────────────────────────────────────────────────
+
+    // Live seed data loaded from Google Sheets. Starts empty; filled by fetchSeeds().
+    let SEEDS = [];
+
+    // Parses a CSV line, handling quoted fields that may contain commas
+    function parseCSVLine(line) {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          inQuotes = !inQuotes;
+        } else if (ch === "," && !inQuotes) {
+          result.push(current.trim());
+          current = "";
+        } else {
+          current += ch;
+        }
+      }
+      result.push(current.trim());
+      return result;
+    }
+
+    // Splits a pipe-separated care field into an array of strings
+    function parsePipeList(str) {
+      if (!str) return [];
+      return str.split("|").map(s => s.trim()).filter(Boolean);
+    }
+
+    // Converts a row of CSV values (with headers) into a seed object
+    function rowToSeed(headers, values) {
+      const get = (col) => (values[headers.indexOf(col)] || "").replace(/^"|"$/g, "").trim();
+      const id = get("ID") || get("Name").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      const stockRaw = parseInt(get("Stock"), 10);
+      const stock = isNaN(stockRaw) ? 0 : stockRaw;
+      const priceRaw = parseFloat(get("Price"));
+      const price = isNaN(priceRaw) ? 0 : priceRaw;
+      const seedsPerPackRaw = parseInt(get("SeedsPerPack"), 10);
+      const seedsPerPack = isNaN(seedsPerPackRaw) ? 0 : seedsPerPackRaw;
+      const tagsRaw = get("Tags");
+      const tags = tagsRaw ? tagsRaw.split(",").map(t => t.trim().toLowerCase()).filter(Boolean) : [];
+      return {
+        id,
+        icon: get("Icon") || "🌱",
+        name: get("Name"),
+        level: get("Level") || "Beginner",
+        category: get("Category") || "Flower",
+        tags,
+        sunlight: get("Sunlight"),
+        water: get("Water"),
+        space: get("Space"),
+        stock,
+        price,
+        seedsPerPack,
+        summary: get("Summary"),
+        photo: get("ImageURL") || "",
+        status: (get("Status") || "active").toLowerCase(),
+        care: {
+          seedCare: parsePipeList(get("CareSeedCare")),
+          planting: parsePipeList(get("CarePlanting")),
+          plantCare: parsePipeList(get("CarePlantCare"))
+        },
+        saving: parsePipeList(get("CareSaving"))
+      };
+    }
+
+    // Fetches seed data from the published Google Sheet CSV URL
+    async function fetchSeeds() {
+      if (!SHEET_CSV_URL || SHEET_CSV_URL === "YOUR_GOOGLE_SHEET_CSV_URL_HERE") {
+        // No sheet configured — fall back to built-in seed data
+        SEEDS = FALLBACK_SEEDS;
+        return { ok: true, source: "fallback" };
+      }
+      // Google Sheets blocks direct browser fetches (CORS). We try two
+      // approaches: first a CORS proxy, then the raw URL as a fallback.
+      const CORS_PROXY = "https://corsproxy.io/?";
+      const urlsToTry = [CORS_PROXY + encodeURIComponent(SHEET_CSV_URL), SHEET_CSV_URL];
+      let lastErr = "";
+      for (const url of urlsToTry) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) { lastErr = "HTTP " + res.status; continue; }
+          const text = await res.text();
+          const lines = text.split("\n").filter(l => l.trim());
+          if (lines.length < 2) { lastErr = "Sheet appears empty"; continue; }
+          const headers = parseCSVLine(lines[0]);
+          const seeds = [];
+          for (let i = 1; i < lines.length; i++) {
+            const values = parseCSVLine(lines[i]);
+            if (values.every(v => !v)) continue;
+            const seed = rowToSeed(headers, values);
+            if (seed.name && seed.status === "active") seeds.push(seed);
+          }
+          SEEDS = seeds;
+          return { ok: true, source: "sheet", count: seeds.length };
+        } catch(e) { lastErr = e.message; }
+      }
+      // All attempts failed
+      console.warn("Sheet fetch failed, using fallback data:", lastErr);
+      SEEDS = FALLBACK_SEEDS;
+      return { ok: false, error: lastErr, source: "fallback" };
+    }
+
+    // ─── FALLBACK SEED DATA (shown when no sheet is connected) ──────────────────
+    // This is the original hardcoded data. Once your sheet is set up, the site
+    // will ignore this and use your sheet data instead.
+    const FALLBACK_SEEDS = [
+      {id:"butterfly-pea", icon:"🪻", name:"Butterfly Pea Flower", level:"Beginner", category:"Flower", tags:["beauty","pollinators","tea","starter"], sunlight:"Full sun to partial sun", water:"Water when top soil starts to dry", space:"Medium pot or planter", stock:12, price:1.50, seedsPerPack:12, photo:"https://images.pexels.com/photos/30569603/pexels-photo-30569603.jpeg?cs=srgb&dl=pexels-titu-sheikh-640506920-30569603.jpg&fm=jpg", status:"active", summary:"Easy flowering vine with edible petals used for tea and natural colouring.", care:{seedCare:["Soak seeds overnight before sowing to improve germination.","Use warm, lightly moist growing medium while waiting for sprouting."], planting:["Plant in a medium pot or planter with room for roots.","Add support early because the vine will climb."], plantCare:["Give full sun to partial sun.","Water when the top layer of soil starts to dry.","Pick flowers often to keep new blooms coming."]}, saving:["Harvest pods when brown and dry.","Dry seeds fully before storage.","Store in a labelled paper packet in a cool dry place."]},
+      {id:"balloon-vine", icon:"🎈", name:"Balloon Vine Flower", level:"Slightly advanced", category:"Flower", tags:["beauty","pollinators","trellis"], sunlight:"Full sun", water:"Keep evenly moist while establishing", space:"Needs vertical support", stock:8, price:1.80, seedsPerPack:8, photo:"https://images.pexels.com/photos/30569603/pexels-photo-30569603.jpeg?cs=srgb&dl=pexels-titu-sheikh-640506920-30569603.jpg&fm=jpg", status:"active", summary:"Fast growing climber with decorative balloon-like pods.", care:{seedCare:["Sow in warm conditions and keep the medium lightly moist.","Do not let new seedlings dry out in the first stage."], planting:["Give it support from the start so the vine has somewhere to climb.","Use a position with strong sun."], plantCare:["Keep moisture fairly even while the plant establishes.","Trim lightly if growth becomes too dense."]}, saving:["Collect mature black seeds from dry papery pods.","Air dry before storing.","Keep in a labelled envelope."]},
+      {id:"black-sunflower", icon:"🌻", name:"Black Sunflower Seeds", level:"Slightly advanced", category:"Flower", tags:["beauty","pollinators","height"], sunlight:"Full sun", water:"Deep watering a few times a week", space:"Large pot or ground preferred", stock:9, price:1.80, seedsPerPack:6, photo:"https://images.pexels.com/photos/3015394/pexels-photo-3015394.jpeg?cs=srgb&dl=pexels-lilartsy-3015394.jpg&fm=jpg", status:"active", summary:"Striking sunflower that needs strong light and root space.", care:{seedCare:["Best sown where it will grow if possible.","Protect young seedlings from heavy disturbance."], planting:["Use a deeper pot or open ground with good drainage.","Leave enough room because the plant grows tall and broad."], plantCare:["Give full sun.","Water deeply a few times a week rather than little splashes.","Stake taller plants in windy areas."]}, saving:["Let flower heads dry on the stalk.","Protect seeds from birds if needed.","Dry thoroughly before storage."]},
+      {id:"nai-bai", icon:"🥬", name:"Nai Bai", level:"Beginner", category:"Edible", tags:["edible","starter","fast","small-space"], sunlight:"Morning sun or bright partial sun", water:"Keep soil lightly moist", space:"Small pot or planter box", stock:16, price:1.20, seedsPerPack:30, photo:"https://images.pexels.com/photos/6555510/pexels-photo-6555510.jpeg?cs=srgb&dl=pexels-son-tung-tran-17375059-6555510.jpg&fm=jpg", status:"active", summary:"Reliable leafy vegetable for beginners and small spaces.", care:{seedCare:["Sow shallowly and keep the surface lightly moist.","Thin seedlings after sprouting so they have space."], planting:["Use a small pot or planter box with loose draining mix.","This works well in compact growing spaces."], plantCare:["Morning sun or bright partial sun is enough.","Keep soil lightly moist, not waterlogged.","Harvest outer leaves first for repeated picking."]}, saving:["Allow some plants to bolt and flower.","Wait for pods to dry on the stalk.","Store only fully dry seed."]},
+      {id:"pumpkin", icon:"🎃", name:"Pumpkin", level:"Beginner", category:"Edible", tags:["edible","starter","ground","family"], sunlight:"Full sun", water:"Deep watering several times a week", space:"Large container or ground space", stock:11, price:1.60, seedsPerPack:5, photo:"https://images.pexels.com/photos/5501926/pexels-photo-5501926.jpeg?cs=srgb&dl=pexels-eva-bronzini-5501926.jpg&fm=jpg", status:"active", summary:"Good for growers with more room and a satisfying edible harvest.", care:{seedCare:["Direct sowing usually works best.","Keep the sowing spot moist until seedlings are established."], planting:["Use a large container or open ground.","Leave enough room for vines to spread."], plantCare:["Give full sun.","Water deeply several times a week.","Feed regularly once vines start running and hand pollinate if fruit set is weak."]}, saving:["Save seeds only from fully mature fruit.","Wash seeds clean of pulp.","Dry completely before storing."]},
+      {id:"ash-gourd", icon:"🍈", name:"Ash Gourd", level:"Beginner", category:"Edible", tags:["edible","starter","trellis","yield"], sunlight:"Full sun", water:"Consistent watering", space:"Large container and trellis preferred", stock:10, price:1.60, seedsPerPack:6, photo:"https://images.pexels.com/photos/5501926/pexels-photo-5501926.jpeg?cs=srgb&dl=pexels-eva-bronzini-5501926.jpg&fm=jpg", status:"active", summary:"Productive vine crop for growers with support space.", care:{seedCare:["Keep germinating seed warm and lightly moist.","Protect young seedlings from drying out."], planting:["Use a large container and add a strong trellis early.","Choose a bright location with room for growth."], plantCare:["Give full sun.","Keep watering consistent.","Use rich soil, feed regularly, and check young leaves for pests."]}, saving:["Use seed from a mature healthy fruit.","Wash and dry seeds completely.","Store only once hard and moisture free."]},
+      {id:"huang-jing-bai-cai", icon:"🥗", name:"Huang Jing Bai Cai", level:"Beginner", category:"Edible", tags:["edible","starter","fast","small-space"], sunlight:"Bright light with some protection from harsh heat", water:"Even moisture", space:"Small to medium pot", stock:14, price:1.20, seedsPerPack:28, photo:"https://images.pexels.com/photos/6555510/pexels-photo-6555510.jpeg?cs=srgb&dl=pexels-son-tung-tran-17375059-6555510.jpg&fm=jpg", status:"active", summary:"Easy edible for small spaces with a quick turnaround.", care:{seedCare:["Sow thinly and keep the surface evenly moist.","Thin early so seedlings do not crowd each other."], planting:["Works in small to medium pots with loose mix.","Good for tight spaces and quick cycles."], plantCare:["Give bright light but protect from the harshest heat.","Maintain even moisture and avoid waterlogging.","Harvest young for better texture."]}, saving:["Let selected plants flower and dry naturally.","Harvest dry pods before they shatter.","Dry again indoors before storage."]},
+      {id:"kow-peck-chye", icon:"🌿", name:"Kow Peck Chye", level:"Beginner", category:"Edible", tags:["edible","starter","fast","small-space"], sunlight:"Partial to full sun", water:"Consistent moisture", space:"Small pot or raised planter", stock:15, price:1.20, seedsPerPack:28, photo:"https://images.pexels.com/photos/6555510/pexels-photo-6555510.jpeg?cs=srgb&dl=pexels-son-tung-tran-17375059-6555510.jpg&fm=jpg", status:"active", summary:"Fast leafy edible and forgiving for first-time growers.", care:{seedCare:["Direct sow or start in shallow trays.","Thin seedlings once they establish."], planting:["Use a small pot or raised planter with drainage.","Keep spacing reasonable to avoid crowding."], plantCare:["Partial to full sun works.","Keep moisture consistent.","Harvest regularly for tenderness."]}, saving:["Allow selected plants to bolt and set seed.","Harvest when pods dry and stems yellow.","Store in paper once fully dry."]},
+      {id:"calamansi", icon:"🍋", name:"Calamansi Lime", level:"Intermediate", category:"Fruit", tags:["edible","fragrant","patio"], sunlight:"Full sun", water:"Moderate but regular", space:"Large pot", stock:7, price:2.20, seedsPerPack:4, photo:"https://images.pexels.com/photos/9234876/pexels-photo-9234876.jpeg?cs=srgb&dl=pexels-li-92812460-9234876.jpg&fm=jpg", status:"active", summary:"Useful edible citrus but slower and longer-term.", care:{seedCare:["If using seed, sow fresh cleaned seed for better success.","Germination can be slower than fast leafy crops."], planting:["Use a large well-drained pot.","Give it a stable sunny position."], plantCare:["Full sun is best.","Water moderately but regularly.","Feed with citrus-suitable fertiliser and do not let roots sit in water."]}, saving:["Seed-grown citrus may not stay true to type.","If saving seed, clean and sow fresh if possible.","For exact fruit quality, grafted plants are more reliable."]},
+      {id:"jasmine", icon:"🤍", name:"Jasmine", level:"Intermediate", category:"Flower", tags:["beauty","fragrant","patio","pollinators"], sunlight:"Full sun to bright partial sun", water:"Regular watering with drainage", space:"Medium to large pot", stock:6, price:2.00, seedsPerPack:8, photo:"https://images.pexels.com/photos/7674315/pexels-photo-7674315.jpeg?cs=srgb&dl=pexels-md-didar-al-mahmud-42036564-7674315.jpg&fm=jpg", status:"active", summary:"Fragrant flowering plant for growers who can maintain pruning and feeding.", care:{seedCare:["Seed is slower and less common than cuttings, so patience matters.","Keep the medium lightly moist, not soggy."], planting:["Use a medium to large pot with drainage.","Place where the plant gets several hours of light."], plantCare:["Full sun to bright partial sun helps flowering.","Water regularly but keep drainage good.","Prune after flowering to shape the plant."]}, saving:["Often propagated from cuttings rather than seed.","If seed forms, let it mature fully before harvesting.","Store dry and labelled."]},
+      {id:"orchids", icon:"🌸", name:"Orchids", level:"Advanced", category:"Flower", tags:["beauty","collector"], sunlight:"Bright indirect light", water:"Moderate with good airflow", space:"Sheltered bright area", stock:5, price:2.50, seedsPerPack:3, photo:"https://images.pexels.com/photos/7674315/pexels-photo-7674315.jpeg?cs=srgb&dl=pexels-md-didar-al-mahmud-42036564-7674315.jpg&fm=jpg", status:"active", summary:"Best for growers who enjoy specific care and slower progress.", care:{seedCare:["Home orchid seed growing is usually not practical for beginners.","This is more of a careful grower option than a starter crop."], planting:["Use orchid-specific media rather than regular soil.","Keep in a sheltered bright spot with airflow."], plantCare:["Bright indirect light is best.","Water thoroughly, then allow some drying between watering.","Good airflow matters."]}, saving:["Home orchid seed propagation is usually impractical.","Focus on plant care and division instead."]},
+    ]; // end FALLBACK_SEEDS
+
+    const STARTER_POSTS = [
+      {
+        id:"p1",
+        user:"Alicia",
+        userId:"demo-alicia",
+        tag:"Beginner grower",
+        time:"2 days ago",
+        seedId:"nai-bai",
+        title:"First Nai Bai harvest",
+        text:"Started with a small balcony tray and managed a full bowl of leaves in under a month. Morning sun worked better than direct afternoon heat.",
+        likes:18,
+        image:"",
+        comments:[
+          {id:"c1", user:"Marcus", text:"Morning sun works better for me too."},
+          {id:"c2", user:"Nur", text:"How often were you watering it?"}
+        ]
+      },
+      {
+        id:"p2",
+        user:"Marcus",
+        userId:"demo-marcus",
+        tag:"Seed saving",
+        time:"5 days ago",
+        seedId:"butterfly-pea",
+        title:"Butterfly pea seeds dried well this week",
+        text:"Left a few pods on the vine until they turned dry and brown. Saved the seeds in a paper packet with the date written outside.",
+        likes:24,
+        image:"",
+        comments:[
+          {id:"c3", user:"Alicia", text:"Did you soak them before sowing the next round?"},
+          {id:"c4", user:"Han", text:"Paper packet tip is useful."}
+        ]
+      },
+      {
+        id:"p3",
+        user:"Nur",
+        userId:"demo-nur",
+        tag:"Community tip",
+        time:"1 week ago",
+        seedId:"black-sunflower",
+        title:"Support tall sunflowers early",
+        text:"My sunflower bent during a storm. Staking earlier would have helped. Sharing this so others can avoid the same mistake.",
+        likes:13,
+        image:"",
+        comments:[
+          {id:"c5", user:"Marcus", text:"Good reminder. I lost one the same way."}
+        ]
+      }
+    ];
+
+    const FALLBACK_EVENTS = [
+      {
+        id:"e1",
+        title:"Seed Swap Saturday",
+        date:"2026-04-04",
+        time:"10:30 AM to 12:30 PM",
+        venue:"SMU Connexion, Level 1",
+        type:"Seed exchange",
+        summary:"Bring labelled seed packets to swap with other growers. Good for edible seeds and flower seeds.",
+        notes:["Label seed type clearly.","Bring only dry, clean seeds.","Beginners welcome."]
+      },
+      {
+        id:"e2",
+        title:"Cuttings Exchange and Propagation Clinic",
+        date:"2026-04-16",
+        time:"1:00 PM to 2:30 PM",
+        venue:"Outside School of Social Sciences, Level 1 Community Garden",
+        type:"Cuttings exchange",
+        summary:"A practical session for plants propagated by cuttings. Bring healthy cuttings and learn basic propagation methods.",
+        notes:["Bring healthy pest-free cuttings.","Small jars or bags recommended.","Staff and students welcome."]
+      },
+      {
+        id:"e3",
+        title:"Community Garden Open House",
+        date:"2026-05-02",
+        time:"9:30 AM to 11:30 AM",
+        venue:"Outside School of Social Sciences, Level 1 Community Garden",
+        type:"Community building",
+        summary:"Walk through the garden, meet other growers, and learn how seed saving connects back into the library.",
+        notes:["Open to first-timers.","No materials needed.","Exchange stories, seeds, and tips."]
+      }
+    ];
+
+    const QUIZ = {
+      questions:[
+        {
+          text:"Your room is messy. What usually happens next?",
+          emphasis:true,
+          answers:[
+            {text:"I fix it immediately", scores:{dedicated:4, explorer:2}},
+            {text:"I fix it later that day", scores:{steady:4, dedicated:2}},
+            {text:"I think about fixing it", scores:{casual:4, explorer:2}},
+            {text:"I adapt to the mess", scores:{easy:5}}
+          ]
+        },
+        {
+          text:"A plant needs water every two to three days. Your reaction?",
+          answers:[
+            {text:"Easy", scores:{dedicated:4, steady:3}},
+            {text:"Manageable if I set reminders", scores:{steady:5, explorer:2}},
+            {text:"I will try, no promises", scores:{casual:4, explorer:3}},
+            {text:"That plant is on its own", scores:{easy:5}}
+          ]
+        },
+        {
+          text:"You notice a yellowing leaf. You:",
+          answers:[
+            {text:"Check light, water, and soil immediately", scores:{dedicated:5}},
+            {text:"Search online and then act", scores:{explorer:5, steady:2}},
+            {text:"Hope it sorts itself out", scores:{casual:4}},
+            {text:"Assume the plant has chosen its fate", scores:{easy:5}}
+          ]
+        },
+        {
+          text:"Which sentence sounds most like you?",
+          answers:[
+            {text:"I enjoy slow progress if I can see it building", scores:{dedicated:5}},
+            {text:"I need visible results to stay motivated", scores:{steady:5}},
+            {text:"I like trying new things, even if I fail", scores:{explorer:5}},
+            {text:"I want the easiest win possible", scores:{easy:5}}
+          ]
+        }
+      ],
+      profiles:{
+        dedicated:{
+          badge:"Dedicated grower",
+          title:"Dedicated grower",
+          fit:"Best fit: Beginner, Intermediate, Slightly Advanced, Advanced",
+          intro:"You are likely to do well with plants that need patience, adjustment, and a bit more consistency.",
+          seeds:["black-sunflower","jasmine","orchids","calamansi"],
+          filter:{level:"all", category:"all", goal:"all", seedIds:["black-sunflower","jasmine","orchids","calamansi"]},
+          copy:{
+            "black-sunflower":"A dramatic sunflower grown for height and visual impact. Better for growers who can commit to sun, support, and space.",
+            "jasmine":"Grown for fragrance rather than speed. Best for growers who enjoy gradual progress and attentive maintenance.",
+            "orchids":"A higher-care option for growers who enjoy precision and patience. Not the best starting point, but rewarding for careful hands.",
+            "calamansi":"A citrus grower for people who do not mind waiting. Better for growers with patience, sun, and regular care habits."
+          }
+        },
+        steady:{
+          badge:"Steady grower",
+          title:"Steady grower",
+          fit:"Best fit: Beginner, Slightly Advanced, Intermediate",
+          intro:"You do well when care is clear, manageable, and worth coming back to regularly.",
+          seeds:["nai-bai","butterfly-pea","huang-jing-bai-cai","kow-peck-chye"],
+          filter:{level:"all", category:"all", goal:"starter", seedIds:["nai-bai","butterfly-pea","huang-jing-bai-cai","kow-peck-chye"]},
+          copy:{
+            "nai-bai":"Fast enough to stay satisfying and forgiving enough to keep going with.",
+            "butterfly-pea":"A fun climber with visible payoff. Good if you want something pretty without going straight into hard mode.",
+            "huang-jing-bai-cai":"Quick edible growth for people who like momentum and clear progress.",
+            "kow-peck-chye":"A strong starter leafy green that rewards consistent basic care."
+          }
+        },
+        explorer:{
+          badge:"Curious grower",
+          title:"Curious grower",
+          fit:"Best fit: Beginner, Slightly Advanced, Intermediate",
+          intro:"You like trying things, learning as you go, and figuring things out through doing.",
+          seeds:["butterfly-pea","balloon-vine","pumpkin","ash-gourd"],
+          filter:{level:"all", category:"all", goal:"trellis", seedIds:["butterfly-pea","balloon-vine","pumpkin","ash-gourd"]},
+          copy:{
+            "butterfly-pea":"A fun plant to experiment with because it climbs, flowers, and gives you visible rewards.",
+            "balloon-vine":"A more playful grower choice with unusual pods and a bit more personality.",
+            "pumpkin":"Good if you want to try a larger edible and see what happens with enough space.",
+            "ash-gourd":"A productive vine for people who do not mind learning support, feeding, and spacing."
+          }
+        },
+        casual:{
+          badge:"Casual grower",
+          title:"Casual grower",
+          fit:"Best fit: Beginner",
+          intro:"You are more likely to enjoy plants that give a clear reward without needing constant checking.",
+          seeds:["nai-bai","huang-jing-bai-cai","kow-peck-chye","pumpkin"],
+          filter:{level:"Beginner", category:"all", goal:"starter", seedIds:["nai-bai","huang-jing-bai-cai","kow-peck-chye","pumpkin"]},
+          copy:{
+            "nai-bai":"One of the easiest useful starts. Fast, practical, and not too demanding.",
+            "huang-jing-bai-cai":"A quick option for small spaces and short attention cycles.",
+            "kow-peck-chye":"Forgiving and familiar. A strong pick if you want a simple edible win.",
+            "pumpkin":"Only if you have space and want a bigger payoff without highly technical care."
+          }
+        },
+        easy:{
+          badge:"Easy win",
+          title:"Easy win",
+          fit:"Best fit: Beginner, fast growers, small-space options",
+          intro:"Go for something simple, visible, and rewarding before you ask yourself to care more.",
+          seeds:["nai-bai","huang-jing-bai-cai","kow-peck-chye","butterfly-pea"],
+          filter:{level:"Beginner", category:"all", goal:"small-space", seedIds:["nai-bai","huang-jing-bai-cai","kow-peck-chye","butterfly-pea"]},
+          copy:{
+            "nai-bai":"Small effort, real payoff. Hard to beat as a first try.",
+            "huang-jing-bai-cai":"Fast and compact. Good when you want something that starts moving quickly.",
+            "kow-peck-chye":"Easy to understand and easy to repeat.",
+            "butterfly-pea":"Still fairly friendly, but gives you a more fun and visual result."
+          }
+        }
+      }
+    };
+
+    function toggleMobileNav(){
+      const drawer = document.getElementById("mobileNavDrawer");
+      const btn = document.getElementById("hamburger");
+      const isOpen = drawer.classList.contains("open");
+      drawer.classList.toggle("open", !isOpen);
+      btn.classList.toggle("open", !isOpen);
+      document.body.style.overflow = isOpen ? "" : "hidden";
+    }
+    function closeMobileNav(){
+      document.getElementById("mobileNavDrawer").classList.remove("open");
+      document.getElementById("hamburger").classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    function save(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+    function load(key, fallback){
+      try{
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      }catch{
+        return fallback;
+      }
+    }
+    function esc(str=""){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+    function formatDate(value){
+      const d = new Date(value);
+      if(Number.isNaN(d.getTime())) return value;
+      return d.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
+    }
+    function formatMonthShort(value){
+      const d = new Date(value);
+      if(Number.isNaN(d.getTime())) return "";
+      return d.toLocaleDateString(undefined,{month:"short"});
+    }
+    function formatDay(value){
+      const d = new Date(value);
+      if(Number.isNaN(d.getTime())) return "";
+      return d.getDate();
+    }
+    function levelRank(level){
+      if(level==="Beginner") return 1;
+      if(level==="Slightly advanced") return 2; // treated as Advanced for display
+      if(level==="Intermediate") return 2;
+      return 3;
+    }
+
+    // Normalise "Slightly advanced" → "Advanced" for display
+    function normaliseLevel(level){
+      if(level==="Slightly advanced") return "Advanced";
+      return level;
+    }
+
+    // Fetch events from the Google Sheet Events tab
+    let EVENTS_DATA = null; // null = not yet fetched; [] = fetched but empty
+
+    async function fetchEvents() {
+      if (!EVENTS_SHEET_CSV_URL || EVENTS_SHEET_CSV_URL === "YOUR_EVENTS_SHEET_CSV_URL_HERE") {
+        EVENTS_DATA = FALLBACK_EVENTS;
+        return { ok: true, source: "fallback" };
+      }
+      const CORS_PROXY = "https://corsproxy.io/?";
+      const urlsToTry = [CORS_PROXY + encodeURIComponent(EVENTS_SHEET_CSV_URL), EVENTS_SHEET_CSV_URL];
+      let lastErr = "";
+      for (const url of urlsToTry) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) { lastErr = "HTTP " + res.status; continue; }
+          const text = await res.text();
+          const lines = text.split("\n").filter(l => l.trim());
+          if (lines.length < 2) { lastErr = "Events sheet appears empty"; continue; }
+          const headers = parseCSVLine(lines[0]);
+          const events = [];
+          for (let i = 1; i < lines.length; i++) {
+            const values = parseCSVLine(lines[i]);
+            if (values.every(v => !v)) continue;
+            const get = (col) => (values[headers.indexOf(col)] || "").replace(/^"|"$/g, "").trim();
+            const status = (get("Status") || "active").toLowerCase();
+            if (status !== "active") continue;
+            events.push({
+              id: "e-" + i,
+              title:   get("Title"),
+              date:    get("Date"),
+              time:    get("Time"),
+              venue:   get("Venue"),
+              type:    get("Type"),
+              summary: get("Summary"),
+              notes:   parsePipeList(get("Notes"))
+            });
+          }
+          EVENTS_DATA = events;
+          return { ok: true, source: "sheet", count: events.length };
+        } catch(e) { lastErr = e.message; }
+      }
+      console.warn("Events fetch failed:", lastErr);
+      EVENTS_DATA = FALLBACK_EVENTS;
+      return { ok: false, error: lastErr, source: "fallback" };
+    }
+
+    const ADMIN_PASSWORD = "smuseedbank2026";
+
+    const app = {
+      state:{
+        page:"home",
+        cart:load("seedCart", []),
+        stocks:load("seedStocks", {}),
+        posts:load("seedPosts", STARTER_POSTS),
+        returns:load("seedReturns", []),
+        user:load("seedUser", {name:"", username:"", phone:"", email:"", id:""}),
+        filter:load("seedFilter", {search:"", level:"all", category:"all", seedIds:null}),
+        learnTab:"seed-saving",
+        quiz:{step:0, answers:[], result:null},
+        appliedProfile:load("seedAppliedProfile", null),
+        adminMode: false
+      },
+
+      async init(){
+        if(!this.state.user.id){
+          this.state.user.id = "user-" + Math.random().toString(36).slice(2,10);
+          save("seedUser", this.state.user);
+        }
+        this.renderNav();
+
+        document.getElementById("page-seeds").innerHTML = `
+          <div class="empty" style="padding:40px;text-align:center;">
+            <div style="font-size:32px;margin-bottom:12px;">🌱</div>
+            <div style="font-weight:900;color:var(--text);margin-bottom:6px;">Loading seed catalogue…</div>
+            <div style="font-size:13px;">Fetching live inventory from Google Sheets.</div>
+          </div>`;
+
+        this.renderHome();
+        this.renderFinder();
+        this.renderCart();
+        this.renderCommunity();
+        this.renderEvents();
+        this.renderReturns();
+        this.renderAccount();
+        this.navigate(this.state.page);
+
+        const [seedResult, eventsResult] = await Promise.all([fetchSeeds(), fetchEvents()]);
+
+        this.state.stocks = Object.fromEntries(SEEDS.map(s => [s.id, s.stock]));
+        this.renderSeeds();
+        this.renderHome();
+        this.renderEvents();
+
+        if (!seedResult.ok) {
+          const notice = document.createElement("div");
+          notice.className = "note";
+          notice.style.cssText = "margin-bottom:16px;background:#fff8ec;border-color:#e0c97a;color:#7a5a00;";
+          notice.innerHTML = `⚠️ <strong>Could not load seed inventory from Google Sheets.</strong> Error: ${seedResult.error}. Showing built-in data instead.`;
+          const seedPage = document.getElementById("page-seeds");
+          if(seedPage) seedPage.prepend(notice);
+        }
+      },
+
+      renderAll(){
+        this.renderHome();
+        this.renderFinder();
+        this.renderCart();
+        this.renderCommunity();
+        this.renderEvents();
+        this.renderReturns();
+        this.renderAccount();
+      },
+
+      navigate(page){
+        this.state.page = page;
+        document.querySelectorAll(".page").forEach(el => el.classList.remove("active"));
+        const target = document.getElementById("page-" + page);
+        if(target) target.classList.add("active");
+        document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.page === page));
+        if(page==="seeds")     this.renderSeeds();
+        if(page==="finder")    this.renderFinder();
+        if(page==="cart")      this.renderCart();
+        if(page==="community") this.renderCommunity();
+        if(page==="events")    this.renderEvents();
+        if(page==="returns")   this.renderReturns();
+        if(page==="account")   this.renderAccount();
+        window.scrollTo({top:0, behavior:"smooth"});
+      },
+
+      renderNav(){
+        const nav = document.getElementById("nav");
+        if(nav) nav.innerHTML = NAV_ITEMS.map(item => `
+          <button class="nav-btn${this.state.page===item.id?" active":""}" data-page="${item.id}" onclick="app.navigate('${item.id}')">${item.label}</button>
+        `).join("");
+        const mobileList = document.getElementById("mobileNavList");
+        if(mobileList) mobileList.innerHTML = NAV_ITEMS.map(item => `
+          <button class="mobile-nav-item${this.state.page===item.id?" active":""}" onclick="app.navigate('${item.id}');closeMobileNav()">${item.label}</button>
+        `).join("");
+      },
+
+      seedById(id){
+        const seed = SEEDS.find(s => s.id === id);
+        return seed ? {...seed, stock:this.state.stocks[id] ?? seed.stock} : null;
+      },
+
+      totalPacks(){
+        return this.state.cart.reduce((sum,item) => sum + item.qty, 0);
+      },
+
+      refundableDeposit(){
+        return this.state.cart.reduce((sum,item) => {
+          const seed = this.seedById(item.seedId);
+          return seed ? sum + item.qty * seed.price : sum;
+        }, 0);
+      },
+
+      adminFee(){
+        return this.state.cart.length ? 0.50 : 0;
+      },
+
+      upfrontTotal(){
+        return this.refundableDeposit() + this.adminFee();
+      },
+
+      buildOrderSummary(){
+        return this.state.cart.map(item => {
+          const seed = this.seedById(item.seedId);
+          return seed ? `${seed.name} x${item.qty}` : "";
+        }).filter(Boolean).join(" | ");
+      },
+
+      buildFormUrl(){
+        const params = new URLSearchParams();
+        params.set("entry." + GOOGLE_FORM.fieldOrderSummary, this.buildOrderSummary());
+        params.set("entry." + GOOGLE_FORM.fieldTotalPacks, String(this.totalPacks()));
+        params.set("entry." + GOOGLE_FORM.fieldAcknowledgment, GOOGLE_FORM.acknowledgmentValue);
+        return GOOGLE_FORM.viewBase + "&" + params.toString();
+      },
+
+      clearFilters(){
+        this.state.filter = {search:"", level:"all", category:"all", seedIds:null};
+        this.state.appliedProfile = null;
+        save("seedFilter", this.state.filter);
+        save("seedAppliedProfile", this.state.appliedProfile);
+        this.renderSeeds();
+      },
+
+      setSearch(value){
+        this.state.filter.search = value;
+        save("seedFilter", this.state.filter);
+        this.renderSeeds();
+      },
+
+      setFilter(key, value){
+        this.state.filter[key] = value;
+        if(key !== "seedIds") this.state.filter.seedIds = null;
+        this.state.appliedProfile = null;
+        save("seedFilter", this.state.filter);
+        save("seedAppliedProfile", this.state.appliedProfile);
+        this.renderSeeds();
+      },
+
+      openCareModal(seedId){
+        const seed = this.seedById(seedId);
+        if(!seed) return;
+        const modal = document.getElementById("careModal");
+        const content = document.getElementById("careModalContent");
+        content.innerHTML = `
+          <div class="eyebrow"><span class="eyebrow-dot"></span> Seed care details</div>
+          <h2 style="margin-top:14px;">${esc(seed.name)}</h2>
+          <p>${esc(seed.summary)}</p>
+
+          <div class="pill-row">
+            <div class="pill">${esc(seed.level)}</div>
+            <div class="pill">${esc(seed.category)}</div>
+            <div class="pill">${seed.stock} packs left</div>
+            <div class="pill">${seed.seedsPerPack} seeds per pack</div>
+          </div>
+
+          <div class="modal-section">
+            <h3>Seed care</h3>
+            <ul class="list">${seed.care.seedCare.map(line => `<li><i>•</i><div>${esc(line)}</div></li>`).join("")}</ul>
+          </div>
+
+          <div class="modal-section">
+            <h3>Planting</h3>
+            <ul class="list">${seed.care.planting.map(line => `<li><i>•</i><div>${esc(line)}</div></li>`).join("")}</ul>
+          </div>
+
+          <div class="modal-section">
+            <h3>Plant care</h3>
+            <ul class="list">${seed.care.plantCare.map(line => `<li><i>•</i><div>${esc(line)}</div></li>`).join("")}</ul>
+          </div>
+
+          <div class="modal-section">
+            <h3>Seed harvesting and storing</h3>
+            <ul class="list">${seed.saving.map(line => `<li><i>•</i><div>${esc(line)}</div></li>`).join("")}</ul>
+          </div>
+        `;
+        modal.classList.add("open");
+        document.body.style.overflow = "hidden";
+      },
+
+      closeCareModal(event){
+        if(event && event.target && event.target.id !== "careModal") return;
+        const modal = document.getElementById("careModal");
+        modal.classList.remove("open");
+        document.body.style.overflow = "";
+      },
+
+      setQty(seedId, value){
+        let qty = parseInt(value,10);
+        if(Number.isNaN(qty)) qty = 0;
+        qty = Math.max(0, qty);
+        const seed = this.seedById(seedId);
+        if(!seed) return;
+        const otherQty = this.state.cart.filter(i => i.seedId !== seedId).reduce((sum,i)=>sum+i.qty,0);
+        const maxAllowed = Math.max(0, 5 - otherQty);
+        qty = Math.min(qty, maxAllowed, seed.stock);
+        const existing = this.state.cart.find(i => i.seedId === seedId);
+        if(existing){
+          existing.qty = qty;
+          if(existing.qty <= 0) this.state.cart = this.state.cart.filter(i => i.seedId !== seedId);
+        }else if(qty > 0){
+          this.state.cart.push({seedId, qty});
+        }
+        save("seedCart", this.state.cart);
+        this.renderSeeds();
+        this.renderCart();
+
+      },
+
+      adjustQty(seedId, delta){
+        const current = this.state.cart.find(i => i.seedId === seedId)?.qty || 0;
+        this.setQty(seedId, current + delta);
+      },
+
+      removeFromCart(seedId){
+        this.state.cart = this.state.cart.filter(i => i.seedId !== seedId);
+        save("seedCart", this.state.cart);
+        this.renderSeeds();
+        this.renderCart();
+
+      },
+
+      quizAnswer(index){
+        const current = this.state.quiz.step;
+        this.state.quiz.answers[current] = index;
+        if(current < QUIZ.questions.length - 1){
+          this.state.quiz.step += 1;
+        }else{
+          this.finishQuiz();
+        }
+        this.renderFinder();
+      },
+
+      finishQuiz(){
+        const totals = {dedicated:0, steady:0, explorer:0, casual:0, easy:0};
+        this.state.quiz.answers.forEach((answerIndex, qIndex) => {
+          const answer = QUIZ.questions[qIndex]?.answers[answerIndex];
+          if(!answer) return;
+          Object.entries(answer.scores).forEach(([k,v]) => totals[k] += v);
+        });
+        this.state.quiz.result = Object.entries(totals).sort((a,b) => b[1] - a[1])[0]?.[0] || "easy";
+      },
+
+      retakeQuiz(){
+        this.state.quiz = {step:0, answers:[], result:null};
+        this.renderFinder();
+      },
+
+      applyQuizResult(){
+        const key = this.state.quiz.result;
+        if(!key) return;
+        const profile = QUIZ.profiles[key];
+        if(!profile) return;
+        this.state.filter = {...this.state.filter, ...profile.filter};
+        this.state.appliedProfile = key;
+        save("seedFilter", this.state.filter);
+        save("seedAppliedProfile", this.state.appliedProfile);
+        this.navigate("seeds");
+      },
+
+      createPost(){
+        const title = document.getElementById("postTitle").value.trim();
+        const text = document.getElementById("postText").value.trim();
+        const seedId = document.getElementById("postSeed").value;
+        const photoInput = document.getElementById("postPhoto");
+
+        if(!title || !text){
+          alert("Please enter both a post title and a post note.");
+          return;
+        }
+
+        const finalise = (imageData="") => {
+          const post = {
+            id:"post-" + Math.random().toString(36).slice(2,10),
+            user:this.state.user.username || this.state.user.name || "Community grower",
+            userId:this.state.user.id,
+            tag:"Community note",
+            time:"Just now",
+            seedId,
+            title,
+            text,
+            likes:0,
+            image:imageData,
+            comments:[]
+          };
+          this.state.posts.unshift(post);
+          save("seedPosts", this.state.posts);
+          this.renderCommunity();
+        };
+
+        const file = photoInput?.files?.[0];
+        if(file){
+          const reader = new FileReader();
+          reader.onload = () => finalise(reader.result || "");
+          reader.readAsDataURL(file);
+        }else{
+          finalise("");
+        }
+      },
+
+      addComment(postId){
+        const input = document.getElementById("comment-" + postId);
+        if(!input) return;
+        const text = input.value.trim();
+        if(!text) return;
+        const post = this.state.posts.find(p => p.id === postId);
+        if(!post) return;
+        post.comments = post.comments || [];
+        post.comments.push({
+          id:"comment-" + Math.random().toString(36).slice(2,9),
+          user:this.state.user.username || this.state.user.name || "Community grower",
+          text
+        });
+        save("seedPosts", this.state.posts);
+        this.renderCommunity();
+      },
+
+      submitReturn(){
+        const name = document.getElementById("returnName").value.trim();
+        const seedType = document.getElementById("returnSeedType").value.trim();
+        const qty = document.getElementById("returnQty").value.trim();
+        const notes = document.getElementById("returnNotes").value.trim();
+        if(!name || !seedType || !qty){
+          alert("Please fill in name, seed type, and quantity.");
+          return;
+        }
+        this.state.returns.unshift({
+          id:"RET-" + Math.random().toString(36).slice(2,8).toUpperCase(),
+          createdAt:new Date().toISOString(),
+          name, seedType, qty, notes, status:"Received"
+        });
+        save("seedReturns", this.state.returns);
+        this.renderReturns();
+        alert("Your seed return has been submitted.");
+      },
+
+      saveAccount(){
+        this.state.user = {
+          ...this.state.user,
+          name:document.getElementById("accName").value.trim(),
+          username:document.getElementById("accUser").value.trim(),
+          phone:document.getElementById("accPhone").value.trim(),
+          email:document.getElementById("accEmail").value.trim()
+        };
+        save("seedUser", this.state.user);
+        this.renderAccount();
+        this.renderCommunity();
+        alert("Profile saved.");
+      },
+
+      resetAll(){
+        if(!confirm("Reset all demo data in this browser?")) return;
+        ["seedCart","seedStocks","seedPosts","seedUser","seedFilter","seedReturns","seedAppliedProfile"].forEach(k => localStorage.removeItem(k));
+        this.state.cart = [];
+        this.state.stocks = Object.fromEntries(SEEDS.map(s => [s.id, s.stock]));
+        this.state.posts = [...STARTER_POSTS];
+        this.state.returns = [];
+        this.state.user = {name:"", username:"", phone:"", email:"", id:"user-" + Math.random().toString(36).slice(2,10)};
+        this.state.filter = {search:"", level:"all", category:"all", seedIds:null};
+        this.state.quiz = {step:0, answers:[], result:null};
+        this.state.appliedProfile = null;
+        save("seedUser", this.state.user);
+        this.renderAll();
+        this.navigate("home");
+      },
+
+      renderHome(){
+        const totalStock = Object.values(this.state.stocks).reduce((a,b) => a+b, 0);
+        document.getElementById("page-home").innerHTML = `
+          <div class="hero">
+            <div class="card hero-main">
+              <div class="eyebrow"><span class="eyebrow-dot"></span> SMU seed library</div>
+              <h1>Grow something real.</h1>
+              <p>
+                Pick seeds that fit your space, place an order, and start growing.
+                This library is built to make gardening feel simple enough to begin and rewarding enough to keep going.
+              </p>
+
+              <div class="cta-row">
+                <button class="btn lg" onclick="app.navigate('seeds')">Browse seeds</button>
+                <button class="btn secondary lg" onclick="app.navigate('finder')">Take the personality test</button>
+              </div>
+
+              <div class="pill-row">
+                <div class="pill">Beginner-friendly</div>
+                <div class="pill">Seed deposit model</div>
+                <div class="pill">Share what you grow</div>
+                <div class="pill">Works for small spaces</div>
+              </div>
+
+              <div class="stats">
+                <div class="stat">
+                  <div class="stat-num">${SEEDS.length}</div>
+                  <div class="stat-label">Seed varieties available</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-num">${totalStock}</div>
+                  <div class="stat-label">Packs currently in stock</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-num">${this.state.posts.length}</div>
+                  <div class="stat-label">Community posts</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2>How it works</h2>
+              <div class="steps" style="margin-top:10px;">
+                <div class="step">
+                  <div class="step-num">1</div>
+                  <div>
+                    <h3>Pick your seeds</h3>
+                    <p>Browse the catalogue or use the personality test for a better starting point.</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-num">2</div>
+                  <div>
+                    <h3>Place your order</h3>
+                    <p>Pay the refundable seed deposit, then collect your seeds from the seed bank.</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-num">3</div>
+                  <div>
+                    <h3>Grow, return, and share</h3>
+                    <p>Return harvested seeds, recover your deposit, and share what you learned with the community.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <div>
+              <h2>What is a community seed bank?</h2>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="card">
+              <h3>A shared growing resource</h3>
+              <p>A community seed bank is a shared space where you can access, borrow, exchange, and return seeds for planting. Think of it as a library — but for seeds.</p>
+              <p>It is more than just a place to store seeds. It is a tool for learning, sharing growing knowledge, and building a sustainable closed-loop community around plants.</p>
+            </div>
+            <div class="card">
+              <h3>Why we started this one</h3>
+              <p>Gardening can feel intimidating, especially if you are not sure where to start or what to grow. This seed bank was started to make seeds more visible, more accessible, and far less daunting for first-time growers.</p>
+              <p>Whether you have a balcony, a windowsill, or a small patch of ground — there is something here for you to try.</p>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <div>
+              <h2>Find us on campus</h2>
+              <p>Directions for the SMU Seed Bank and the SMU Community Garden.</p>
+            </div>
+          </div>
+
+          <div class="map-grid">
+            <div class="card map-card">
+              <div class="map-copy">
+                <h3>SMU Seed Bank</h3>
+                <p>Located on the 1st floor of SMU Connexion.</p>
+                <div class="pill-row">
+                  <div class="pill">Pickup point</div>
+                  <div class="pill">Level 1</div>
+                </div>
+                <div class="cta-row">
+                  <a class="btn secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=SMU+Connexion+Singapore">Open in Google Maps</a>
+                </div>
+              </div>
+              <iframe class="map-frame" loading="lazy" src="https://www.google.com/maps?q=SMU%20Connexion%20Singapore&output=embed"></iframe>
+            </div>
+
+            <div class="card map-card">
+              <div class="map-copy">
+                <h3>SMU Community Garden</h3>
+                <p>Located on the 1st floor, outside School of Social Sciences.</p>
+                <div class="pill-row">
+                  <div class="pill">Community garden</div>
+                  <div class="pill">Level 1</div>
+                </div>
+                <div class="cta-row">
+                  <a class="btn secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=SMU+School+of+Social+Sciences+Singapore">Open in Google Maps</a>
+                </div>
+              </div>
+              <iframe class="map-frame" loading="lazy" src="https://www.google.com/maps?q=SMU%20School%20of%20Social%20Sciences%20Singapore&output=embed"></iframe>
+            </div>
+          </div>
+        `;
+      },
+      renderSeeds(){
+        const page = document.getElementById("page-seeds");
+        const {search, level, category, seedIds} = this.state.filter;
+
+        const filtered = SEEDS
+          .map(seed => ({...seed, stock: this.state.stocks[seed.id] ?? seed.stock, displayLevel: normaliseLevel(seed.level)}))
+          .filter(seed => {
+            const query = search.toLowerCase();
+            const matchesSearch = !search || seed.name.toLowerCase().includes(query) || seed.summary.toLowerCase().includes(query) || seed.tags.some(t => t.includes(query));
+            const matchesLevel = level === "all" || normaliseLevel(seed.level) === level;
+            const matchesCategory = category === "all" || seed.category === category;
+            const matchesSeedIds = !seedIds || seedIds.includes(seed.id);
+            return matchesSearch && matchesLevel && matchesCategory && matchesSeedIds;
+          })
+          .sort((a,b) => (b.stock > 0) - (a.stock > 0) || levelRank(a.level) - levelRank(b.level));
+
+        const appliedProfile = this.state.appliedProfile ? QUIZ.profiles[this.state.appliedProfile] : null;
+
+        page.innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2>Seed catalogue</h2>
+              <p>Browse what fits your space, pace, and interest. Maximum 5 packs per order.</p>
+            </div>
+            <button class="btn secondary" onclick="app.navigate('cart')">View cart</button>
+          </div>
+
+          <div class="catalog-layout">
+            <div class="filter-stack">
+              <div class="filter-shell">
+                <h3>Find a better fit</h3>
+                <p>Use the filters to narrow down what you actually want to grow.</p>
+
+                <div class="filter-box">
+                  <div class="filter-title">Search by plant</div>
+                  <div class="search-shell">
+                    <input type="text" value="${esc(search)}" placeholder="Search seeds" oninput="app.setSearch(this.value)">
+                  </div>
+                </div>
+
+                <div class="filter-box">
+                  <div class="filter-title">Category</div>
+                  <div class="seg-row">
+                    <button class="seg ${category==='all'?'active':''}" onclick="app.setFilter('category','all')">All</button>
+                    <button class="seg ${category==='Flower'?'active':''}" onclick="app.setFilter('category','Flower')">Flower</button>
+                    <button class="seg ${category==='Edible'?'active':''}" onclick="app.setFilter('category','Edible')">Edible</button>
+                    <button class="seg ${category==='Fruit'?'active':''}" onclick="app.setFilter('category','Fruit')">Fruit</button>
+                  </div>
+                </div>
+
+                <div class="filter-box">
+                  <div class="filter-title">Difficulty</div>
+                  <div class="seg-row">
+                    <button class="seg ${level==='all'?'active':''}" onclick="app.setFilter('level','all')">All</button>
+                    <button class="seg ${level==='Beginner'?'active':''}" onclick="app.setFilter('level','Beginner')">Beginner</button>
+                    <button class="seg ${level==='Intermediate'?'active':''}" onclick="app.setFilter('level','Intermediate')">Intermediate</button>
+                    <button class="seg ${level==='Advanced'?'active':''}" onclick="app.setFilter('level','Advanced')">Advanced</button>
+                  </div>
+                </div>
+
+                <div class="filter-box">
+                  <div class="filter-title">Personality match</div>
+                  <p style="font-size:13px;margin:0 0 12px;">Take the personality test to get seed suggestions that match your habits.</p>
+                  <button class="btn secondary" style="width:100%;" onclick="app.navigate('finder')">Take personality test</button>
+                </div>
+
+                <div class="cta-row">
+                  <button class="btn ghost" onclick="app.clearFilters()">Clear filters</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              ${appliedProfile ? `
+                <div class="applied-note">
+                  <div class="tiny" style="font-weight:900;color:var(--text);margin-bottom:4px;">Applied result: ${appliedProfile.title}</div>
+                  <div class="tiny">Filtered to your personality test suggestions. Click Clear filters to see all seeds.</div>
+                </div>
+              ` : ""}
+
+              <div class="section-head" style="margin-top:0;">
+                <div>
+                  <h2>${filtered.length} result${filtered.length===1?"":"s"}</h2>
+                  <p>Tap Care details on any card for full growing instructions.</p>
+                </div>
+              </div>
+
+              <div class="seed-grid">
+                ${filtered.map(seed => {
+                  const currentQty = this.state.cart.find(i => i.seedId === seed.id)?.qty || 0;
+                  const capWarn = this.totalPacks() >= 5 && currentQty === 0;
+                  const outOfStock = seed.stock <= 0;
+                  return `
+                    <div class="card seed-card${outOfStock?' oos-card':''}">
+                      <div class="seed-media">
+                        <img class="seed-photo" src="${seed.photo}" alt="${esc(seed.name)}" onerror="this.style.display='none'">
+                        <div class="seed-media-top">
+                          <div class="seed-visual-tag">${seed.category}</div>
+                        </div>
+                        ${outOfStock ? `<div class="oos-overlay">Out of stock</div>` : ""}
+                        <div class="seed-media-bottom">
+                          <h4>${seed.name}</h4>
+                        </div>
+                      </div>
+
+                      <div class="seed-body">
+                        <div class="seed-head">
+                          <div class="tiny" style="flex:1;">${seed.summary}</div>
+                          <div class="price">$${seed.price.toFixed(2)}</div>
+                        </div>
+
+                        <div class="seed-badges">
+                          <div class="badge">${seed.displayLevel}</div>
+                          <div class="badge">${seed.category}</div>
+                          ${outOfStock
+                            ? `<div class="badge oos-badge">Out of stock</div>`
+                            : `<div class="badge">${seed.stock} pack${seed.stock===1?"":"s"} left</div>`}
+                          <div class="badge">${seed.seedsPerPack} seeds/pack</div>
+                        </div>
+
+                        <div class="cta-row" style="margin-top:14px;">
+                          <button class="btn secondary" onclick="app.openCareModal('${seed.id}')">Care details</button>
+                        </div>
+
+                        <div class="seed-actions">
+                          <div class="tiny">${outOfStock ? '<span class="warn">Out of stock — check back soon</span>' : (seed.stock <= 3 ? `<span style="color:var(--amber);font-weight:900;">Only ${seed.stock} left!</span>` : "Ready to add")}</div>
+                          ${outOfStock ? "" : `
+                          <div class="qty-wrap">
+                            <div class="qty-control">
+                              <button class="qty-btn" onclick="app.adjustQty('${seed.id}',-1)">−</button>
+                              <input class="qty-input" type="number" min="0" max="5" value="${currentQty}" onchange="app.setQty('${seed.id}',this.value)">
+                              <button class="qty-btn" onclick="app.adjustQty('${seed.id}',1)">+</button>
+                            </div>
+                            <button class="btn secondary" onclick="app.navigate('cart')">Cart</button>
+                          </div>`}
+                        </div>
+                        ${!outOfStock ? `<div class="tiny ${capWarn?'warn':''}" style="margin-top:10px;">${capWarn?'Max 5 packs per order reached.':'Max 5 packs per order.'}</div>` : ""}
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+
+      renderFinder(){
+        const page = document.getElementById("page-finder");
+
+        if(this.state.quiz.result){
+          const profile = QUIZ.profiles[this.state.quiz.result];
+          page.innerHTML = `
+            <div class="section-head" style="margin-top:0;">
+              <div>
+                <h2>Your result</h2>
+                <p>A useful starting point, not a fixed label. Pick the plants you are most likely to enjoy caring for.</p>
+              </div>
+            </div>
+
+            <div class="quiz-result-card">
+              <div class="result-top">
+                <div>
+                  <div class="result-badge">${profile.badge}</div>
+                  <h1 style="font-size:34px;margin-top:16px;">${profile.title}</h1>
+                  <p style="max-width:760px;font-size:17px;">${profile.intro}</p>
+                </div>
+                <div class="result-fit">${profile.fit}</div>
+              </div>
+
+              <div style="margin-top:30px;">
+                <h2 style="font-size:20px;">Suggested seeds</h2>
+              </div>
+
+              <div class="result-seeds">
+                ${profile.seeds.map(seedId => {
+                  const seed = this.seedById(seedId);
+                  if(!seed) return "";
+                  return `<div class="result-seed"><h4>${seed.name}</h4><p>${profile.copy[seedId] || seed.summary}</p></div>`;
+                }).join("")}
+              </div>
+
+              <div class="result-actions">
+                <button class="btn" onclick="app.applyQuizResult()">Use this result on the catalogue page</button>
+                <button class="btn secondary" onclick="app.retakeQuiz()">Retake test</button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        const qIndex = this.state.quiz.step;
+        const question = QUIZ.questions[qIndex];
+        const progress = (qIndex / QUIZ.questions.length) * 100;
+
+        page.innerHTML = `
+          <div class="quiz-shell">
+            <div class="quiz-head">
+              <h1 style="margin-top:0;">Personality test</h1>
+              <p style="max-width:760px;font-size:17px;">
+                A quick quiz to help match you with plants that fit your pace, habits, and level of commitment.
+              </p>
+            </div>
+
+            <div class="quiz-layout">
+              <div class="quiz-main">
+                <div class="quiz-progress">
+                  <div class="quiz-progress-bar" style="width:${progress}%;"></div>
+                </div>
+
+                <div class="quiz-qtag">Question ${qIndex + 1} of ${QUIZ.questions.length}</div>
+                <div class="quiz-question ${question.emphasis ? "emph" : ""}">${question.text}</div>
+
+                <div class="quiz-options">
+                  ${question.answers.map((answer, idx) => `<button class="quiz-option" onclick="app.quizAnswer(${idx})">${answer.text}</button>`).join("")}
+                </div>
+              </div>
+
+              <div class="quiz-side">
+                <div class="card">
+                  <h2 style="margin:0 0 10px;">Why take it</h2>
+                  <p>It points you toward plants you are more likely to enjoy and keep up with.</p>
+                </div>
+                <div class="card">
+                  <h2 style="margin:0 0 10px;">What happens after</h2>
+                  <p>Your result narrows the catalogue and applies seed suggestions directly instead of sending you back to the generic list.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      renderCart(){
+        const items = this.state.cart.map(item => {
+          const seed = this.seedById(item.seedId);
+          return seed ? {...item, seed} : null;
+        }).filter(Boolean);
+
+        const deposit = this.refundableDeposit();
+        const formUrl = this.buildFormUrl();
+        this._lastFormUrl = formUrl;
+
+        document.getElementById("page-cart").innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2>Cart &amp; checkout</h2>
+              <p>Review your order, then submit the form to place it.</p>
+            </div>
+            <div class="pill">${this.totalPacks()} / 5 packs selected</div>
+          </div>
+
+          ${items.length ? `
+            <div class="two-col">
+              <div>
+                <div class="card" style="margin-bottom:18px;">
+                  <h3>Your order</h3>
+                  <div class="cart-list" style="margin-top:12px;">
+                    ${items.map(item => `
+                      <div class="cart-item">
+                        <div>
+                          <div class="cart-name">${item.seed.name}</div>
+                          <div class="cart-meta">${item.seed.displayLevel || item.seed.level} · ${item.seed.seedsPerPack} seeds per pack</div>
+                        </div>
+                        <div class="cart-right">
+                          <div class="price">$${(item.seed.price * item.qty).toFixed(2)}</div>
+                          <div class="qty-control">
+                            <button class="qty-btn" onclick="app.adjustQty('${item.seed.id}',-1)">−</button>
+                            <input class="qty-input" type="number" min="0" max="5" value="${item.qty}" onchange="app.setQty('${item.seed.id}',this.value)">
+                            <button class="qty-btn" onclick="app.adjustQty('${item.seed.id}',1)">+</button>
+                          </div>
+                          <button class="btn ghost" onclick="app.removeFromCart('${item.seed.id}')">Remove</button>
+                        </div>
+                      </div>
+                    `).join("")}
+                  </div>
+
+                  <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
+                    ${items.map(item => `<div class="sum-row"><span>${item.seed.name} × ${item.qty}</span><strong>$${(item.seed.price*item.qty).toFixed(2)}</strong></div>`).join("")}
+                    <div class="sum-row deposit"><span>Refundable seed deposit</span><strong>$${deposit.toFixed(2)}</strong></div>
+                    <div class="sum-row" style="color:var(--brand);"><span>Admin handling fee</span><strong>Waived 🎉</strong></div>
+                    <div class="sum-row total"><span>Total due</span><span>$${deposit.toFixed(2)}</span></div>
+                  </div>
+
+                  <div class="sum-box">
+                    <div class="tiny" style="font-weight:900;color:var(--text);margin-bottom:6px;">About the deposit</div>
+                    <div class="tiny">The seed cost is a refundable deposit. Return your harvested seeds and get it back.</div>
+                  </div>
+
+                  <div class="cta-row">
+                    <button class="btn secondary" onclick="app.navigate('seeds')">Add more seeds</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="note" style="margin-bottom:18px;">
+                  Your cart details are pre-filled. Just add your contact info and submit.
+                </div>
+
+                <div style="height:1px;background:var(--line);margin:18px 0;"></div>
+
+                <div class="cta-row">
+                  <button class="btn" onclick="app.onOrderSubmit(this)">Open order form</button>
+                </div>
+                <p class="tiny" style="margin-top:10px;">Opens in a new tab with your order pre-filled.</p>
+
+                <iframe class="form-frame" src="${formUrl}&embedded=true" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+              </div>
+            </div>
+          ` : `
+            <div class="empty">
+              Your cart is empty.
+              <div class="cta-row" style="justify-content:center;margin-top:14px;">
+                <button class="btn" onclick="app.navigate('seeds')">Browse seeds</button>
+              </div>
+            </div>
+          `}
+        `;
+      },
+
+      onOrderSubmit(btn){
+        // Open the form immediately — don't block on Telegram
+        const formUrl = this._lastFormUrl || this.buildFormUrl();
+        window.open(formUrl, "_blank");
+        // Fire Telegram in the background — no await so it doesn't block anything
+        const items = this.state.cart.map(item => {
+          const seed = this.seedById(item.seedId);
+          return seed ? `${seed.name} ×${item.qty}` : null;
+        }).filter(Boolean).join(", ");
+        const total = this.refundableDeposit().toFixed(2);
+        const packs = this.totalPacks();
+        const msg = `🌱 New Seed Library Order\n\nItems: ${items}\nPacks: ${packs}\nTotal deposit: $${total}\nTime: ${new Date().toLocaleString("en-SG")}`;
+        sendTelegramNotification(msg).catch(e => console.warn("Telegram failed:", e));
+      },
+      renderCommunity(){
+        const posts = [...this.state.posts];
+        const isAdmin = this.state.adminMode;
+        document.getElementById("page-community").innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2>Community feed</h2>
+              <p>Share what worked, what failed, and what others should know before planting.</p>
+            </div>
+            <button class="btn ghost" style="font-size:11px;" onclick="app.toggleAdminMode()">
+              ${isAdmin ? '🔒 Exit admin mode' : '⚙ Admin'}
+            </button>
+          </div>
+
+          ${isAdmin ? `<div class="note" style="margin-bottom:16px;background:#fff8ec;border-color:#e0c97a;color:#7a5a00;">⚙ Admin mode active — you can delete any post.</div>` : ""}
+
+          <div class="community-layout">
+            <div class="community-sidebar">
+              <div class="card">
+                <h3>Make a post</h3>
+                <div style="margin-top:10px;">
+                  <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Post title</label>
+                  <input type="text" id="postTitle" placeholder="Example: Nai Bai grew well in morning sun" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;">
+                </div>
+                <div style="margin-top:12px;">
+                  <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Seed type</label>
+                  <select id="postSeed" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;">
+                    ${SEEDS.map(seed => `<option value="${seed.id}">${seed.name}</option>`).join("")}
+                  </select>
+                </div>
+                <div style="margin-top:12px;">
+                  <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Your note</label>
+                  <textarea id="postText" rows="5" placeholder="What happened, what worked, and what others should watch for" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;"></textarea>
+                </div>
+                <div style="margin-top:12px;">
+                  <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Optional photo</label>
+                  <input id="postPhoto" type="file" accept="image/*" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff;">
+                </div>
+                <div class="cta-row">
+                  <button class="btn" onclick="app.createPost()">Publish post</button>
+                </div>
+              </div>
+
+              <div class="card">
+                <h3>What makes a useful post</h3>
+                <ul class="list">
+                  <li><i>1</i><div>Describe your growing setup, not only the result.</div></li>
+                  <li><i>2</i><div>State whether the plant was in full sun, partial sun, pot, tray, or ground.</div></li>
+                  <li><i>3</i><div>Share mistakes too. Failure data is often more useful than success data.</div></li>
+                  <li><i>4</i><div>Include practical seed-saving notes when relevant.</div></li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <div class="section-head" style="margin-top:0;">
+                <div>
+                  <h2>Latest posts</h2>
+                  <p>${posts.length} post${posts.length===1?"":"s"} shown</p>
+                </div>
+              </div>
+
+              <div class="feed">
+                ${posts.map(post => {
+                  const own = post.userId === this.state.user.id;
+                  const comments = post.comments || [];
+                  const canDelete = own || isAdmin;
+                  return `
+                    <div class="post">
+                      <div class="post-head">
+                        <div>
+                          <div class="post-user">${esc(post.user)}</div>
+                          <div class="post-meta">${esc(post.tag)} · ${esc(post.time)}</div>
+                        </div>
+                        <div class="pill">${esc(post.title)}</div>
+                      </div>
+                      <p>${esc(post.text)}</p>
+                      ${post.image ? `<div class="post-img"><img src="${post.image}" alt="${esc(post.title)}"></div>` : ""}
+                      <div class="post-actions">
+                        <span>❤ ${post.likes}</span>
+                        <span>💬 ${comments.length}</span>
+                      </div>
+                      ${canDelete ? `<div class="post-tools"><button onclick="app.deletePost('${post.id}')">${isAdmin && !own ? '🗑 Remove post (admin)' : 'Delete my post'}</button></div>` : ""}
+                      <div class="comment-box">
+                        <div class="tiny" style="font-weight:900;color:var(--text);">Comments</div>
+                        <div class="comment-list">
+                          ${comments.length ? comments.map(comment => `
+                            <div class="comment">
+                              <div class="comment-author">${esc(comment.user)}</div>
+                              <div class="comment-text">${esc(comment.text)}</div>
+                            </div>
+                          `).join("") : `<div class="tiny">No comments yet.</div>`}
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+                          <input id="comment-${post.id}" type="text" placeholder="Add a comment" style="flex:1 1 240px;border:1px solid var(--line);border-radius:14px;padding:12px 13px;">
+                          <button class="btn secondary" onclick="app.addComment('${post.id}')">Post comment</button>
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      toggleAdminMode(){
+        if(this.state.adminMode){
+          this.state.adminMode = false;
+          this.renderCommunity();
+        } else {
+          const pw = prompt("Enter admin password:");
+          if(pw === ADMIN_PASSWORD){
+            this.state.adminMode = true;
+            this.renderCommunity();
+          } else if(pw !== null) {
+            alert("Incorrect password.");
+          }
+        }
+      },
+
+      deletePost(postId){
+        if(this.state.adminMode){
+          this.state.posts = this.state.posts.filter(p => p.id !== postId);
+        } else {
+          this.state.posts = this.state.posts.filter(p => !(p.id === postId && p.userId === this.state.user.id));
+        }
+        save("seedPosts", this.state.posts);
+        this.renderCommunity();
+      },
+
+
+      renderEvents(){
+        const events = EVENTS_DATA || FALLBACK_EVENTS;
+        document.getElementById("page-events").innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2>Events</h2>
+              <p>Upcoming events at SMU for seed exchange, cuttings swaps, and community building.</p>
+            </div>
+          </div>
+
+          ${events.length ? `
+          <div class="event-grid">
+            ${events.map(event => `
+              <div class="event-card">
+                <div class="event-head">
+                  <div class="event-date">
+                    <div class="day">${formatDay(event.date)}</div>
+                    <div class="month">${formatMonthShort(event.date)}</div>
+                  </div>
+                  <div class="event-chip">${esc(event.type)}</div>
+                </div>
+                <div>
+                  <h3>${esc(event.title)}</h3>
+                  <p>${esc(event.summary)}</p>
+                </div>
+                <div class="event-meta">
+                  <div class="pill">${formatDate(event.date)}</div>
+                  <div class="pill">${esc(event.time)}</div>
+                  <div class="pill">${esc(event.venue)}</div>
+                </div>
+                ${event.notes.length ? `<ul class="list">${event.notes.map(note=>`<li><i>•</i><div>${esc(note)}</div></li>`).join("")}</ul>` : ""}
+              </div>
+            `).join("")}
+          </div>
+          ` : `<div class="empty">No upcoming events. Check back soon.</div>`}
+        `;
+      },
+
+      renderReturns(){
+        const items = this.state.returns;
+        document.getElementById("page-returns").innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2>Seed returns</h2>
+              <p>Tell us what you are returning before you drop it off at the collection point.</p>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="card">
+              <h3>Submit a return</h3>
+              <div style="margin-top:10px;">
+                <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Name</label>
+                <input id="returnName" type="text" placeholder="Your name" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;">
+              </div>
+              <div style="margin-top:12px;">
+                <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Seed type</label>
+                <input id="returnSeedType" type="text" placeholder="Example: Butterfly Pea Flower" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;">
+              </div>
+              <div style="margin-top:12px;">
+                <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Approximate quantity</label>
+                <input id="returnQty" type="text" placeholder="Example: 20 seeds" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;">
+              </div>
+              <div style="margin-top:12px;">
+                <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Useful growing notes</label>
+                <textarea id="returnNotes" rows="5" placeholder="Drying method, harvest date, pest issues, or germination notes" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;"></textarea>
+              </div>
+              <div class="cta-row">
+                <button class="btn" onclick="app.submitReturn()">Submit return</button>
+              </div>
+              <div class="note" style="margin-top:14px;">
+                Pack seeds dry, label them clearly, and include any notes that would help the next grower.
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Return rules</h3>
+              <ul class="list">
+                <li><i>1</i><div>Return only clean, dry, identifiable seeds.</div></li>
+                <li><i>2</i><div>Do not return mouldy, damp, or mixed seed batches.</div></li>
+                <li><i>3</i><div>Label the seed type clearly and include the date where possible.</div></li>
+                <li><i>4</i><div>Use paper packets rather than sealed plastic if the seeds may still hold moisture.</div></li>
+                <li><i>5</i><div>Useful growing notes help the next person start better.</div></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <div>
+              <h2>Recent returns</h2>
+              <p>${items.length} return${items.length===1 ? "" : "s"} saved in this browser</p>
+            </div>
+          </div>
+
+          ${items.length ? `
+            <div class="card">
+              <div class="cart-list">
+                ${items.map(item => `
+                  <div class="cart-item">
+                    <div>
+                      <div class="cart-name">${esc(item.seedType)}</div>
+                      <div class="cart-meta">${esc(item.name)} · ${formatDate(item.createdAt)} · ${esc(item.qty)}</div>
+                      <div class="tiny" style="margin-top:8px;">${esc(item.notes || "No extra notes.")}</div>
+                    </div>
+                    <div class="cart-right">
+                      <div class="pill">${esc(item.status)}</div>
+                      <div class="tiny">${esc(item.id)}</div>
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          ` : `
+            <div class="empty">No returns yet.</div>
+          `}
+        `;
+      },
+
+      renderAccount(){
+        const user = this.state.user;
+        document.getElementById("page-account").innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2>My account</h2>
+              <p>Set your posting name and keep your browser-side history in one place.</p>
+            </div>
+          </div>
+
+          <div class="two-col" style="grid-template-columns:320px 1fr;">
+            <div class="card">
+              <h3>Profile</h3>
+              <div style="margin-top:10px;">
+                <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Display name</label>
+                <input type="text" id="accName" value="${esc(user.name || "")}" placeholder="Your name" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;">
+              </div>
+              <div style="margin-top:10px;">
+                <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Username for community posts</label>
+                <input type="text" id="accUser" value="${esc(user.username || "")}" placeholder="How your posts will appear" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;">
+              </div>
+              <div style="margin-top:10px;">
+                <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Email</label>
+                <input type="email" id="accEmail" value="${esc(user.email || "")}" placeholder="Email" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;">
+              </div>
+              <div style="margin-top:10px;">
+                <label style="display:block;font-size:12px;font-weight:900;color:var(--muted);margin-bottom:7px;">Phone</label>
+                <input type="tel" id="accPhone" value="${esc(user.phone || "")}" placeholder="Phone" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;">
+              </div>
+              <div class="cta-row">
+                <button class="btn" onclick="app.saveAccount()">Save profile</button>
+                <button class="btn ghost" onclick="app.resetAll()">Reset demo data</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Notes</h3>
+              <ul class="list">
+                <li><i>1</i><div>This one-file version stores data only in the browser.</div></li>
+                <li><i>2</i><div>Community posts can use actual uploaded images for new posts.</div></li>
+                <li><i>3</i><div>Seed cards now open care information in a popup instead of expanding the tile height.</div></li>
+                <li><i>4</i><div>The checkout QR now points to your attached PayNow image file.</div></li>
+              </ul>
+            </div>
+          </div>
+        `;
+      }
+    };
+
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape"){
+        app.closeCareModal();
+      }
+    });
+
+    app.init();
+  </script>
+</body>
+</html>
